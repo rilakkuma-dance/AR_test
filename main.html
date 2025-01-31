@@ -6,24 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>main</title>
 <link rel="stylesheet" href="index.css" />
-<script>
-    // main.js
-
-// Add an event listener for the "Go to Another Page" button
-document.getElementById("go-to-page-button").addEventListener("click", function() {
-    // Redirect to another page
-    window.location.href = "index.html";  // Change this to your desired page
-  });
-</script>
 </head>
 
 <body>
   <header>
     <h1>Todo PWA</h1>
-    <form id="new-task-form">
-      <input type="text" name="new-task-input" id="new-task-input" placeholder="What do you have planned?" />
-      <input type="submit" id="new-task-submit" value="Add task" />
-    </form>
     <!-- Button with an onclick event -->
     <input type="button" id="go-to-page-button" value="Go to Another Page" />
   </header>
@@ -35,8 +22,16 @@ document.getElementById("go-to-page-button").addEventListener("click", function(
     </section>
   </main>
 
-  <!-- Link to external JavaScript file -->
-  <script src="main.js"></script>
+  <script>
+    // Wait until the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add an event listener for the "Go to Another Page" button
+        document.getElementById("go-to-page-button").addEventListener("click", function() {
+            // Redirect to another page
+            window.location.href = "index.html";  // Change this to your desired page
+        });
+    });
+  </script>
 </body>
 
 </html>
