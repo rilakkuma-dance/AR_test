@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Load A-Frame and AR.js -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+
+  <a-scene
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <!-- Image Tracking (NFT) -->
+    <a-nft
+      type="nft"
+      url="https://rilakkuma-dance.github.io/AR_test/pattern-Flag_Cambodia.png"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance=".01"
+      smoothThreshold="5"
+    >
+      <!-- 3D Model (GLTF) Appears on Image -->
+      <a-entity
+        gltf-model="https://rilakkuma-dance.github.io/AR_test/Earth.glb"
+        scale="100 100 100"
+        position="0 0 0"
+      >
+      </a-entity>
+    </a-nft>
+
+    <!-- AR Camera -->
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
+</body>
+</html>

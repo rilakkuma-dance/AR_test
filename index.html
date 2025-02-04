@@ -3,45 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Load A-Frame and AR.js -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-
+  <title>Start AR</title>
   <style>
-    body { margin: 0; overflow: hidden; }
+    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: white; font-family: Arial, sans-serif; }
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #0056b3; }
   </style>
 </head>
 <body>
 
-  <a-scene
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true;"
-    embedded
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
-  >
-    <!-- Image Tracking (NFT) -->
-    <a-nft
-      type="nft"
-      url="https://rilakkuma-dance.github.io/AR_test/pattern-Flag_Cambodia.patt"
-      smooth="true"
-      smoothCount="10"
-      smoothTolerance=".01"
-      smoothThreshold="5"
-    >
-      <!-- 3D Model (GLTF) Appears on Image -->
-      <a-entity
-        gltf-model="https://rilakkuma-dance.github.io/AR_test/Earth.glb"
-        scale="100 100 100"
-        position="0 0 0"
-      >
-      </a-entity>
-    </a-nft>
+  <button onclick="startAR()">Start AR</button>
 
-    <!-- AR Camera -->
-    <a-entity camera></a-entity>
-
-  </a-scene>
+  <script>
+    function startAR() {
+      window.location.href = "cambodia.html"; // Redirect to AR page
+    }
+  </script>
 
 </body>
 </html>
