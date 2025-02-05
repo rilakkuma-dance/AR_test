@@ -8,32 +8,33 @@
     <script>
         AFRAME.registerComponent('marker-handler', {
             init: function() {
-                const scanText = document.getElementById("scanText");
-
-                // Set text visible at start
-                if (scanText) {
-                    scanText.object3D.visible = true;
-                }
-
-                this.el.addEventListener('markerFound', function() {
-                    console.log('Marker Found');
+                this.el.addEventListener('markerFound', () => {
+                    // Hide the text by moving it far away
+                    const scanText = document.querySelector('#scanText');
+                    if (scanText) {
+                        scanText.setAttribute('position', '0 1000 -1');
+                    }
                     // Hide loading screen
                     document.querySelector('.arjs-loader').style.display = 'none';
-                    // Hide scan text
-                    if (scanText) {
-                        scanText.object3D.visible = false;
-                    }
                 });
 
-                this.el.addEventListener('markerLost', function() {
-                    console.log('Marker Lost');
-                    // Show scan text again
+                this.el.addEventListener('markerLost', () => {
+                    // Show the text by moving it back
+                    const scanText = document.querySelector('#scanText');
                     if (scanText) {
-                        scanText.object3D.visible = true;
+                        scanText.setAttribute('position', '0 0.3 -1');
                     }
                 });
             }
         });
+
+        // Make sure text is visible at start
+        window.onload = function() {
+            const scanText = document.querySelector('#scanText');
+            if (scanText) {
+                scanText.setAttribute('position', '0 0.3 -1');
+            }
+        };
     </script>
     <style>
         .arjs-loader {
