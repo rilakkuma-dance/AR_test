@@ -29,7 +29,7 @@
 
     #elishaImage {
       position: absolute;
-      top: 30%; /* Adjust this to change vertical position */
+      top: 35%; /* Adjust this to change vertical position */
       left: 50%;
       transform: translateX(-50%); /* Center the image */
       width: 300px; /* Adjust image size */
@@ -37,20 +37,26 @@
       z-index: 1; /* Keep image above background */
     }
 
-    h1 {
-      color: white;
-      font-size: 4em;
-      position: relative;
-      top: 5%; /* Moves text lower */
-      z-index: 3; /* Keep it on top */
+    .text-box {
+      position: absolute;
+      top: 10%; /* Adjust position */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.8); /* White with transparency */
+      padding: 20px 40px; /* Adjust padding for size */
+      border-radius: 15px; /* Rounded corners */
+      text-align: center;
+      z-index: 3; /* Ensure it's above the camera feed */
+    }
+
+    h1, h2 {
+      margin: 10px 0; /* Space between texts */
+      font-size: 3.5em; /* Adjust text size */
+      color: black; /* Change text color for contrast */
     }
 
     h2 {
-      color: white;
-      font-size: 3em;
-      position: relative;
-      top: -5%; /* Moves text lower */
-      z-index: 3; /* Keep it on top */
+      font-size: 2em;
     }
 
     button {
@@ -71,8 +77,10 @@
 
   <video id="cameraFeed" autoplay playsinline></video>
 
-  <h1>Hello!</h1>
-  <h2>សួស្តី!</h2>
+  <div class="text-box">
+    <h1>Hello!</h1>
+    <h2>សួស្តី!</h2>
+  </div>  
   <img id="elishaImage" src="elisha.png" alt="Elisha">
   <button onclick="startAR()">Next</button>
 
