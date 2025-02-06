@@ -41,6 +41,14 @@
       color: white;
       font-size: 4em;
       position: relative;
+      top: 5%; /* Moves text lower */
+      z-index: 3; /* Keep it on top */
+    }
+
+    h2 {
+      color: white;
+      font-size: 4em;
+      position: relative;
       top: 10%; /* Moves text lower */
       z-index: 3; /* Keep it on top */
     }
@@ -64,6 +72,7 @@
   <video id="cameraFeed" autoplay playsinline></video>
 
   <h1>Hello!</h1>
+  <h2>សួស្តី!</h2>
   <img id="elishaImage" src="elisha.png" alt="Elisha">
   <button onclick="startAR()">Next</button>
 
