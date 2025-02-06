@@ -39,12 +39,22 @@ button:hover {
   background: #0056b3;
 }
 
+#arlogoImage {
+      position: absolute;
+      top: 30%; /* Adjust this to change vertical position */
+      left: 50%;
+      transform: translateX(-50%); /* Center the image */
+      width: 300px; /* Adjust image size */
+      height: auto;
+      z-index: 1; /* Keep image above background */
+    }
+
   </style>
 </head>
 <body>
 
   <h1>AR English Learning</h1>
-  <img src="arlogo.png" alt="logo">  
+  <img id="arlogoImage" src="arlogo.png" alt="logo">  
   <button onclick="startAR()">Start AR</button>
   <script>
     function startAR() {
