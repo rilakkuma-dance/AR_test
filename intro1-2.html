@@ -146,26 +146,25 @@
   <button onclick="startAR()">Next</button>
 
   <script>
-  function useExistingCameraStream() {
-    const cameraStatus = sessionStorage.getItem("cameraAccess");
-
-    if (cameraStatus === "granted") {
-      console.log("Camera permission already granted. Reusing the stream.");
-      return; // Skip asking again
-    } else {
-      console.warn("Camera access was denied or not granted yet.");
-      // Optionally, show a message instead of requesting access again
+    function openCamera() {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Use back camera if available
+        .then((stream) => {
+          document.getElementById("cameraFeed").srcObject = stream;
+        })
+        .catch((error) => {
+          console.error("Camera access denied:", error);
+        });
     }
-  }
 
-  function startAR() {
-    window.location.href = "intro1-3.html"; // Redirect to AR page
-  }
+    function startAR() {
+      window.location.href = "intro1-3.html"; // Redirect to AR page
+    }
 
-  function goBack() {
-    window.location.href = "intro1-1.html"; // Previous page
-  }
+    function goBack() {
+      window.location.href = "intro1-1.html"; // Previous page
+    }
 
+    openCamera(); // Automatically open camera on page load
   </script>
 
 </body>
