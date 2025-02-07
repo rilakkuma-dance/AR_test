@@ -146,24 +146,35 @@
   <button onclick="startAR()">Next</button>
 
   <script>
-  function resumeCamera() {
-    if (sessionStorage.getItem("cameraAccess") === "granted") {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then((stream) => {
-          const videoElement = document.getElementById("cameraFeed");
-          if (videoElement) {
-            videoElement.srcObject = stream;
-          } else {
-            console.error("Camera video element not found.");
-          }
-        })
-        .catch((error) => console.error("Error accessing camera:", error));
-    } else {
-      console.warn("Camera access was denied previously.");
-    }
+ function resumeCamera() {
+  if (sessionStorage.getItem("cameraAccess") === "granted") {
+    const settings = JSON.parse(sessionStorage.getItem("cameraSettings"));
+    navigator.mediaDevices.getUserMedia({ 
+      video: {
+        facingMode: 'environment',
+        ...settings
+      }
+    })
+    .then(stream => {
+      const videoElement = document.getElementById("cameraFeed");
+      if (videoElement) {
+        videoElement.srcObject = stream;
+      }
+    })
+    .catch(error => console.error("Error resuming camera:", error));
+  } else {
+    console.warn("Camera access was not granted on previous page");
   }
+}
 
-  window.onload = resumeCamera;
+// Add this to both pages to handle cleanup
+window.addEventListener('beforeunload', () => {
+  const videoElement = document.getElementById("cameraFeed");
+  if (videoElement && videoElement.srcObject) {
+    const tracks = videoElement.srcObject.getVideoTracks();
+    tracks.forEach(track => track.stop());
+  }
+});
 
   function startAR() {
     window.location.href = "intro1-3.html"; // Redirect to AR page
