@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Flag Detector</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js"></script>    
     <style>
         .arjs-loader {
             height: 100%;
@@ -34,18 +34,23 @@
     </div>
 
     <script>
+        // Check camera access first
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                console.log('Camera access granted');
+                stream.getTracks().forEach(track => track.stop()); // Stop the test stream
+            })
+            .catch(err => console.error('Camera access denied:', err));
+
         // Handle cleanup before page unload
         window.addEventListener('beforeunload', () => {
-            // Remove AR.js camera stream
             const video = document.querySelector('.a-canvas');
-            if (video) {
-                const stream = video.srcObject;
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                }
+            if (video && video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
             }
         });
 
+        // Flag handler component
         AFRAME.registerComponent('flag-handler', {
             init: function() {
                 this.flagPages = {
@@ -53,50 +58,64 @@
                     "australia": "australia.html"
                 };
 
+                // Bind methods
                 this.markerFound = this.markerFound.bind(this);
+                this.markerLost = this.markerLost.bind(this);
+
+                // Add event listeners
                 this.el.addEventListener('markerFound', this.markerFound);
+                this.el.addEventListener('markerLost', this.markerLost);
+
+                console.log('Flag handler initialized for:', this.el.id);
             },
 
             markerFound: function() {
                 const markerId = this.el.id;
                 console.log('Marker found:', markerId);
                 
-                if (this.flagPages[markerId]) {
-                    // Clean up before navigation
-                    const scene = document.querySelector('a-scene');
-                    if (scene) {
-                        scene.renderer = null;
-                        scene.effect = null;
-                    }
-
-                    // Stop camera stream
-                    const video = document.querySelector('.a-canvas');
-                    if (video) {
-                        const stream = video.srcObject;
-                        if (stream) {
-                            stream.getTracks().forEach(track => track.stop());
-                        }
-                    }
-
-                    // Navigate after cleanup
-                    setTimeout(() => {
-                        window.location.href = this.flagPages[markerId];
-                    }, 300);
+                if (!this.flagPages[markerId]) {
+                    console.error('No page defined for marker:', markerId);
+                    return;
                 }
+
+                // Clean up scene
+                const scene = document.querySelector('a-scene');
+                if (scene) {
+                    scene.renderer = null;
+                    scene.effect = null;
+                }
+
+                // Stop camera stream
+                const video = document.querySelector('.a-canvas');
+                if (video && video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+
+                // Navigate after cleanup
+                setTimeout(() => {
+                    window.location.href = this.flagPages[markerId];
+                }, 300);
+            },
+
+            markerLost: function() {
+                console.log('Marker lost:', this.el.id);
             },
 
             remove: function() {
+                // Clean up event listeners
                 this.el.removeEventListener('markerFound', this.markerFound);
+                this.el.removeEventListener('markerLost', this.markerLost);
             }
         });
 
-        // Remove loader once scene is loaded
+        // Scene loaded handler
         AFRAME.registerComponent('scene-loaded', {
             init: function() {
                 const loader = document.querySelector('.arjs-loader');
                 if (loader) {
                     loader.style.display = 'none';
                 }
+                console.log('Scene loaded successfully');
             }
         });
     </script>
@@ -106,8 +125,8 @@
         renderer="logarithmicDepthBuffer: true; precision: medium;"
         embedded
         arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:640; sourceHeight:480;"
+        scene-loaded
     >
-
         <a-nft
             id="cambodia"
             flag-handler
@@ -116,18 +135,8 @@
             smooth="true"
             smoothCount="30"
             smoothTolerance="0.01"
-            smoothThreshold="20">
-        </a-nft>
-
-        <a-nft
-            id="australia"
-            flag-handler
-            type="nft"
-            url="path_to_australia_marker"
-            smooth="true"
-            smoothCount="10"
-            smoothTolerance="0.01"
-            smoothThreshold="5">
+            smoothThreshold="20"
+        >
         </a-nft>
 
         <a-entity camera></a-entity>
