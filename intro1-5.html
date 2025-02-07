@@ -157,8 +157,8 @@
   <div class="back-button" onclick="goBack()"></div>
 
   <div class="text-box">
-    <h1>What is your name?</h1>
-    <h2>តើអ្នកឈ្មោះអ្វី?</h2>
+    <h1>I am (Your name)</h1>
+    <h2>ខ្ញុំ (ឈ្មោះរបស់អ្នក)</h2>
   </div>  
 
   <img id="elishaImage" src="elisha.png" alt="Elisha">
@@ -242,18 +242,22 @@
     const speakButton = document.getElementById("speakButton");
     isRecording = false;
     speakButton.classList.remove("recording");
-    speakButton.innerText = "🎤 Speak";
+    
+    if (shouldRedirect) {
+        // Redirect after delay
+        setTimeout(() => {
+            window.location.href = "intro1-6.html";
+        }, 2000);
+    } else {
+        // If not redirecting, reset to speak button
+        speakButton.innerText = "...";
+        speakButton.style.backgroundColor = "darkred"; // Keep dark red when idle
+    }
 
     if (recognition) {
         recognition.stop();
     }
-
-    if (shouldRedirect) {
-        setTimeout(() => {
-        window.location.href = "intro1-6.html";
-        }, 2000);
-    }
-    }
+}
   </script>  
 
 </body>
