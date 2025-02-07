@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Load the latest versions of the libraries -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     
@@ -30,35 +29,74 @@
 </head>
 
 <body style="margin: 0; overflow: hidden;">
-    <!-- Loading screen -->
     <div class="arjs-loader">
         <div>Loading, please wait...</div>
     </div>
 
     <script>
+        // Handle cleanup before page unload
+        window.addEventListener('beforeunload', () => {
+            // Remove AR.js camera stream
+            const video = document.querySelector('.a-canvas');
+            if (video) {
+                const stream = video.srcObject;
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            }
+        });
+
         AFRAME.registerComponent('flag-handler', {
             init: function() {
-                // Flag redirections
                 this.flagPages = {
                     "cambodia": "cambodia.html",
                     "australia": "australia.html"
                 };
 
-                this.el.addEventListener('markerFound', () => {
-                    const markerId = this.el.id;
-                    console.log('Marker found:', markerId);
-                    
-                    if (this.flagPages[markerId]) {
-                        // Add a small delay to ensure marker is properly detected
-                        setTimeout(() => {
-                            window.location.href = this.flagPages[markerId];
-                        }, 1000);
-                    }
-                });
+                this.markerFound = this.markerFound.bind(this);
+                this.el.addEventListener('markerFound', this.markerFound);
+            },
 
-                this.el.addEventListener('markerLost', () => {
-                    console.log('Marker lost');
-                });
+            markerFound: function() {
+                const markerId = this.el.id;
+                console.log('Marker found:', markerId);
+                
+                if (this.flagPages[markerId]) {
+                    // Clean up before navigation
+                    const scene = document.querySelector('a-scene');
+                    if (scene) {
+                        scene.renderer = null;
+                        scene.effect = null;
+                    }
+
+                    // Stop camera stream
+                    const video = document.querySelector('.a-canvas');
+                    if (video) {
+                        const stream = video.srcObject;
+                        if (stream) {
+                            stream.getTracks().forEach(track => track.stop());
+                        }
+                    }
+
+                    // Navigate after cleanup
+                    setTimeout(() => {
+                        window.location.href = this.flagPages[markerId];
+                    }, 300);
+                }
+            },
+
+            remove: function() {
+                this.el.removeEventListener('markerFound', this.markerFound);
+            }
+        });
+
+        // Remove loader once scene is loaded
+        AFRAME.registerComponent('scene-loaded', {
+            init: function() {
+                const loader = document.querySelector('.arjs-loader');
+                if (loader) {
+                    loader.style.display = 'none';
+                }
             }
         });
     </script>
@@ -67,9 +105,9 @@
         vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true; precision: medium;"
         embedded
-        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+        scene-loaded>
 
-        <!-- Cambodia flag marker -->
         <a-nft
             id="cambodia"
             flag-handler
@@ -81,7 +119,6 @@
             smoothThreshold="5">
         </a-nft>
 
-        <!-- Australia flag marker -->
         <a-nft
             id="australia"
             flag-handler
@@ -93,7 +130,6 @@
             smoothThreshold="5">
         </a-nft>
 
-        <!-- Camera -->
         <a-entity camera></a-entity>
     </a-scene>
 </body>
