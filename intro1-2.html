@@ -146,35 +146,17 @@
   <button onclick="startAR()">Next</button>
 
   <script>
- function resumeCamera() {
-  if (sessionStorage.getItem("cameraAccess") === "granted") {
-    const settings = JSON.parse(sessionStorage.getItem("cameraSettings"));
-    navigator.mediaDevices.getUserMedia({ 
-      video: {
-        facingMode: 'environment',
-        ...settings
-      }
-    })
-    .then(stream => {
-      const videoElement = document.getElementById("cameraFeed");
-      if (videoElement) {
-        videoElement.srcObject = stream;
-      }
-    })
-    .catch(error => console.error("Error resuming camera:", error));
-  } else {
-    console.warn("Camera access was not granted on previous page");
-  }
-}
+  function useExistingCameraStream() {
+    const cameraStatus = sessionStorage.getItem("cameraAccess");
 
-// Add this to both pages to handle cleanup
-window.addEventListener('beforeunload', () => {
-  const videoElement = document.getElementById("cameraFeed");
-  if (videoElement && videoElement.srcObject) {
-    const tracks = videoElement.srcObject.getVideoTracks();
-    tracks.forEach(track => track.stop());
+    if (cameraStatus === "granted") {
+      console.log("Camera permission already granted. Reusing the stream.");
+      return; // Skip asking again
+    } else {
+      console.warn("Camera access was denied or not granted yet.");
+      // Optionally, show a message instead of requesting access again
+    }
   }
-});
 
   function startAR() {
     window.location.href = "intro1-3.html"; // Redirect to AR page

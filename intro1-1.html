@@ -148,58 +148,38 @@
   <button onclick="startAR()">Next</button>
 
   <script>
-let cameraStream;
+    function startAR() {
+      window.location.href = "intro1-2.html"; // Next page
+    }
 
-function openCamera() {
-  // Only request camera access if we haven't already
-  if (!sessionStorage.getItem("cameraStream")) {
+    function goBack() {
+      window.location.href = "index.html"; // Previous page
+    }
+    
+    let cameraStream;
+
+  function openCamera() {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
       .then((stream) => {
+        cameraStream = stream;
         const videoElement = document.getElementById("cameraFeed");
+
         if (videoElement) {
           videoElement.srcObject = stream;
-          // Store the track settings in sessionStorage
-          const videoTrack = stream.getVideoTracks()[0];
-          const settings = videoTrack.getSettings();
-          sessionStorage.setItem("cameraSettings", JSON.stringify(settings));
           sessionStorage.setItem("cameraAccess", "granted");
         } else {
           console.error("Camera video element not found. Retrying...");
-          setTimeout(openCamera, 500);
+          setTimeout(openCamera, 500); // Retry after 500ms
         }
       })
       .catch((error) => {
         console.error("Camera access denied:", error);
         sessionStorage.setItem("cameraAccess", "denied");
       });
-  } else {
-    // Reuse existing camera settings
-    const settings = JSON.parse(sessionStorage.getItem("cameraSettings"));
-    navigator.mediaDevices.getUserMedia({ 
-      video: {
-        facingMode: 'environment',
-        ...settings
-      }
-    })
-    .then(stream => {
-      const videoElement = document.getElementById("cameraFeed");
-      if (videoElement) {
-        videoElement.srcObject = stream;
-      }
-    });
   }
-}
 
-// Function to handle page transitions
-function startAR() {
-  // Store current video track state before navigation
-  const videoElement = document.getElementById("cameraFeed");
-  if (videoElement && videoElement.srcObject) {
-    const tracks = videoElement.srcObject.getVideoTracks();
-    tracks.forEach(track => track.enabled = true);
-  }
-  window.location.href = "intro1-2.html";
-}
+  // Run only after the page is fully loaded
+  window.onload = openCamera;
   </script>
 
 </body>
