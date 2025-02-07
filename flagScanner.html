@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  <script>
+    // Define redirection links for detected flags
+    const flagPages = {
+      "cambodia": "cambodia.html",
+      "australia": "australia.html",
+      // Add more flags here
+    };
+
+    AFRAME.registerComponent('marker-handler', {
+      init: function() {
+        this.el.addEventListener('markerFound', () => {
+          let markerId = this.el.getAttribute("id"); // Get flag ID
+          console.log("Detected flag:", markerId);
+
+          if (flagPages[markerId]) {
+            window.location.href = flagPages[markerId]; // Redirect to AR page
+          } else {
+            alert("Flag not recognized. Try again.");
+          }
+        });
+      }
+    });
+  </script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+  <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
+    <a-text value="Scan a national flag" position="0 1.5 -3" color="white"></a-text>
+
+    <!-- Define Flag Markers -->
+    <a-marker id="cambodia" marker-handler type="nft" url="path_to_cambodia_marker"></a-marker>
+    <a-marker id="australia" marker-handler type="nft" url="path_to_australia_marker"></a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>

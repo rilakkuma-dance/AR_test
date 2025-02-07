@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fullscreen Video Background */
+    #cameraFeed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1; /* Behind the text */
+    }
+
+    /* Elisha Image */
+    #elishaImage {
+      position: absolute;
+      top: 30vh; 
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30vw; 
+      max-width: 300px; 
+      height: auto;
+      z-index: 1;
+    }
+
+    /* Text Box */
+    .text-box {
+      position: absolute;
+      top: 15vh;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 2vh 4vw;
+      border-radius: 15px;
+      text-align: center;
+      z-index: 3;
+      width: min(80%, 400px);
+    }
+
+    h1, h2 {
+      margin: 10px 0;
+      font-size: clamp(2em, 5vw, 3.5em);
+      color: black;
+    }
+
+    h2 {
+      font-size: clamp(1.5em, 4vw, 2em);
+    }
+
+    /* Next Button */
+    button {
+      padding: 1.5vh 3vw;
+      font-size: clamp(16px, 2vw, 20px);
+      background: skyblue;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: absolute;
+      bottom: 5vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20vw;
+      max-width: 200px;
+    }
+
+    button:hover { 
+      background: #0056b3;
+      color: white;
+    }
+
+    /* Back Button (Top Left) */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      transition: 0.3s;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .back-button::before {
+      content: "←";
+      font-size: 24px;
+      color: black;
+      font-weight: bold;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+      #elishaImage {
+        top: 43vh;
+        width: 60vw;
+      }
+
+      .text-box {
+        width: 90%;
+        top: 13vh;
+      }
+
+      button {
+        width: 60vw;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <video id="cameraFeed" autoplay playsinline></video>
+  <div class="back-button" onclick="goBack()"></div>
+
+  <div class="text-box">
+    <h1>Can you please scan a national flag in the world map?</h1>
+    <h2>តើអ្នកអាចស្កេនទង់ជាតិក្នុងផែនទីពិភពលោកបានទេ?</h2>
+  </div>  
+  <img id="elishaImage" src="elisha.png" alt="Elisha">
+  <button onclick="startAR()">Next</button>
+
+  <script>
+    function openCamera() {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Use back camera if available
+        .then((stream) => {
+          document.getElementById("cameraFeed").srcObject = stream;
+        })
+        .catch((error) => {
+          console.error("Camera access denied:", error);
+        });
+    }
+
+    function startAR() {
+      window.location.href = "flagScanner.html"; // Redirect to AR page
+    }
+
+    function goBack() {
+      window.location.href = "intro1-7.html"; // Previous page
+    }
+
+    openCamera(); // Automatically open camera on page load
+  </script>
+
+</body>
+</html>
