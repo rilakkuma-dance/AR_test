@@ -61,6 +61,35 @@
       font-size: clamp(1.5em, 4vw, 2em);
     }
 
+        /* Back Button (Top Left) */
+        .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      transition: 0.3s;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .back-button::before {
+      content: "←";
+      font-size: 24px;
+      color: black;
+      font-weight: bold;
+    }
+
     /* Speak Button */
     .speak-btn {
       padding: 1.5vh 3vw;
@@ -113,7 +142,7 @@
 
       .text-box {
         width: 90%;
-        top: 8vh;
+        top: 13vh;
       }
 
       .speak-btn {
@@ -125,6 +154,7 @@
 <body>
 
   <video id="cameraFeed" autoplay playsinline></video>
+  <div class="back-button" onclick="goBack()"></div>
 
   <div class="text-box">
     <h1>What is your name?</h1>
@@ -151,6 +181,10 @@
         .catch((error) => {
           console.error("Camera access denied:", error);
         });
+    }
+
+    function goBack() {
+      window.location.href = "intro1-4.html"; // Previous page
     }
   
     openCamera(); // Automatically open camera on page load
