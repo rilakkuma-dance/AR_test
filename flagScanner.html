@@ -105,8 +105,8 @@
         vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true; precision: medium;"
         embedded
-        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-        scene-loaded>
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:640; sourceHeight:480;"
+    >
 
         <a-nft
             id="cambodia"
@@ -114,9 +114,9 @@
             type="nft"
             url="https://rilakkuma-dance.github.io/AR_test/cambodia/cambodia"
             smooth="true"
-            smoothCount="10"
+            smoothCount="30"
             smoothTolerance="0.01"
-            smoothThreshold="5">
+            smoothThreshold="20">
         </a-nft>
 
         <a-nft
