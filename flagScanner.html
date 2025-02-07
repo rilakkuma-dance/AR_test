@@ -1,43 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-  <script>
-    // Define redirection links for detected flags
-    const flagPages = {
-      "cambodia": "cambodia.html",
-      "australia": "australia.html",
-      // Add more flags here
-    };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Load the latest versions of the libraries -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    
+    <style>
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    AFRAME.registerComponent('marker-handler', {
-      init: function() {
-        this.el.addEventListener('markerFound', () => {
-          let markerId = this.el.getAttribute("id"); // Get flag ID
-          console.log("Detected flag:", markerId);
-
-          if (flagPages[markerId]) {
-            window.location.href = flagPages[markerId]; // Redirect to AR page
-          } else {
-            alert("Flag not recognized. Try again.");
-          }
-        });
-      }
-    });
-  </script>
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.25em;
+            color: white;
+        }
+    </style>
 </head>
+
 <body style="margin: 0; overflow: hidden;">
-  <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
-    <a-text value="Scan a national flag" position="0 1.5 -3" color="white"></a-text>
+    <!-- Loading screen -->
+    <div class="arjs-loader">
+        <div>Loading, please wait...</div>
+    </div>
 
-    <!-- Define Flag Markers -->
-    <a-marker id="cambodia" marker-handler type="nft" url="https://rilakkuma-dance.github.io/AR_test/cambodia/cambodia"></a-marker>
-    <a-marker id="australia" marker-handler type="nft" url="path_to_australia_marker"></a-marker>
+    <script>
+        AFRAME.registerComponent('flag-handler', {
+            init: function() {
+                // Flag redirections
+                this.flagPages = {
+                    "cambodia": "cambodia.html",
+                    "australia": "australia.html"
+                };
 
-    <a-entity camera></a-entity>
-  </a-scene>
+                this.el.addEventListener('markerFound', () => {
+                    const markerId = this.el.id;
+                    console.log('Marker found:', markerId);
+                    
+                    if (this.flagPages[markerId]) {
+                        // Add a small delay to ensure marker is properly detected
+                        setTimeout(() => {
+                            window.location.href = this.flagPages[markerId];
+                        }, 1000);
+                    }
+                });
+
+                this.el.addEventListener('markerLost', () => {
+                    console.log('Marker lost');
+                });
+            }
+        });
+    </script>
+
+    <a-scene
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+
+        <!-- Cambodia flag marker -->
+        <a-nft
+            id="cambodia"
+            flag-handler
+            type="nft"
+            url="https://rilakkuma-dance.github.io/AR_test/cambodia/cambodia"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5">
+        </a-nft>
+
+        <!-- Australia flag marker -->
+        <a-nft
+            id="australia"
+            flag-handler
+            type="nft"
+            url="path_to_australia_marker"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5">
+        </a-nft>
+
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
 </body>
 </html>
