@@ -146,25 +146,33 @@
   <button onclick="startAR()">Next</button>
 
   <script>
-    function useExistingCameraStream() {
-        const existingStream = window.localStorage.getItem("cameraStream");
-
-        if (existingStream) {
-        document.getElementById("cameraFeed").srcObject = JSON.parse(existingStream);
-        } else {
-        console.warn("No existing camera stream found. Camera access was probably denied in the previous page.");
-        }
+  function resumeCamera() {
+    if (sessionStorage.getItem("cameraAccess") === "granted") {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+          const videoElement = document.getElementById("cameraFeed");
+          if (videoElement) {
+            videoElement.srcObject = stream;
+          } else {
+            console.error("Camera video element not found.");
+          }
+        })
+        .catch((error) => console.error("Error accessing camera:", error));
+    } else {
+      console.warn("Camera access was denied previously.");
     }
+  }
 
-    function startAR() {
-        window.location.href = "intro1-3.html"; // Redirect to AR page
-    }
+  window.onload = resumeCamera;
 
-    function goBack() {
-        window.location.href = "intro1-1.html"; // Previous page
-    }
+  function startAR() {
+    window.location.href = "intro1-3.html"; // Redirect to AR page
+  }
 
-    useExistingCameraStream(); // Use the existing camera stream
+  function goBack() {
+    window.location.href = "intro1-1.html"; // Previous page
+  }
+
   </script>
 
 </body>

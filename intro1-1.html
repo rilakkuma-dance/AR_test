@@ -148,16 +148,6 @@
   <button onclick="startAR()">Next</button>
 
   <script>
-    function openCamera() {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) 
-        .then((stream) => {
-          document.getElementById("cameraFeed").srcObject = stream;
-        })
-        .catch((error) => {
-          console.error("Camera access denied:", error);
-        });
-    }
-
     function startAR() {
       window.location.href = "intro1-2.html"; // Next page
     }
@@ -165,8 +155,31 @@
     function goBack() {
       window.location.href = "index.html"; // Previous page
     }
+    
+    let cameraStream;
 
-    openCamera(); 
+  function openCamera() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((stream) => {
+        cameraStream = stream;
+        const videoElement = document.getElementById("cameraFeed");
+
+        if (videoElement) {
+          videoElement.srcObject = stream;
+          sessionStorage.setItem("cameraAccess", "granted");
+        } else {
+          console.error("Camera video element not found. Retrying...");
+          setTimeout(openCamera, 500); // Retry after 500ms
+        }
+      })
+      .catch((error) => {
+        console.error("Camera access denied:", error);
+        sessionStorage.setItem("cameraAccess", "denied");
+      });
+  }
+
+  // Run only after the page is fully loaded
+  window.onload = openCamera;
   </script>
 
 </body>
