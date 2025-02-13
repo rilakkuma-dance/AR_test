@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script>
+        AFRAME.registerComponent('marker-handler', {
+            init: function() {
+                this.el.addEventListener('markerFound', () => {
+                    // Hide the text by moving it far away
+                    const scanText = document.querySelector('#scanText');
+                    if (scanText) {
+                        scanText.setAttribute('position', '0 1000 -1');
+                    }
+                    // Hide loading screen
+                    document.querySelector('.arjs-loader').style.display = 'none';
+                });
+
+                this.el.addEventListener('markerLost', () => {
+                    // Show the text by moving it back
+                    const scanText = document.querySelector('#scanText');
+                    if (scanText) {
+                        scanText.setAttribute('position', '0 0.3 -1');
+                    }
+                });
+            }
+        });
+
+        // Make sure text is visible at start
+        window.onload = function() {
+            const scanText = document.querySelector('#scanText');
+            if (scanText) {
+                scanText.setAttribute('position', '0 0.3 -1');
+            }
+        };
+    </script>
+    <style>
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.25em;
+            color: white;
+        }
+        .a-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 1 !important;
+        }
+    </style>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <div class="arjs-loader">
+        <div>Loading, please wait...</div>
+    </div>
+    <a-scene
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:640; sourceHeight:480;"
+    >
+        <a-text 
+            id="scanText"
+            value="Scan"
+            position="0 0.3 -1"
+            align="center"
+            color="white"
+            scale="0.5 0.5 0.5"
+            look-at="[camera]"
+        ></a-text>
+        <a-nft
+            marker-handler
+            type="nft"
+            url="https://rilakkuma-dance.github.io/AR_test/australia/australia"
+            smooth="true"
+            smoothCount="30"
+            smoothTolerance=".01"
+            smoothThreshold="20"
+        >
+            <a-entity
+                gltf-model="https://rilakkuma-dance.github.io/AR_test/Earth.glb"
+                scale="2.5 2.5 2.5"
+                position="2 2 0"
+                rotation="0 0 0"
+            >
+            </a-entity>
+        </a-nft>
+        <a-entity camera></a-entity>
+    </a-scene>
+</body>
+</html>
